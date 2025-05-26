@@ -1,1 +1,330 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>सालगिरह मुबारक!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Tangerine:wght@700&family=Hind+Siliguri:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg-color1: #ffdde1; 
+      --bg-color2: #ee9ca7; 
+      --bg-color3: #ffafbd; 
+      --bg-color4: #ffc3a0; 
+      
+      --text-color-main: #4A235A; 
+      --heart-color-main: #d83a56; 
+      --button-bg-color: #fff;
+      --button-text-color-main: var(--heart-color-main);
+      --card-bg-color: rgba(255, 255, 255, 0.93);
+      --countdown-text-color: #fff;
 
+      /* मूल वेरिएबल्स को नए नामों से मैप किया */
+      --primary-color: var(--bg-color1);
+      --secondary-color: var(--bg-color2);
+      --text-color: var(--text-color-main);
+      --heart-color: var(--heart-color-main);
+      --button-bg: var(--button-bg-color);
+      --button-text-color: var(--button-text-color-main);
+      --card-bg: var(--card-bg-color);
+    }
+
+    body {
+      margin: 0; padding: 0;
+      background: linear-gradient(135deg, var(--bg-color1), var(--bg-color2), var(--bg-color3), var(--bg-color4));
+      background-size: 400% 400%; animation: gradientAnimation 15s ease infinite;
+      font-family: 'Poppins', 'Hind Siliguri', sans-serif; display: flex; align-items: center;
+      justify-content: center; min-height: 100vh; color: var(--text-color);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .countdown-container {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex;
+        flex-direction: column; align-items: center; justify-content: center;
+        z-index: 10; opacity: 1; transition: opacity 1s ease-out 0.5s;
+    }
+    .countdown-container.hidden { opacity: 0; pointer-events: none; }
+    .countdown-number {
+        font-family: 'Tangerine', 'Great Vibes', cursive; font-size: 200px; font-weight: 700;
+        color: var(--countdown-text-color); text-shadow: 3px 3px 10px rgba(0,0,0,0.35); opacity: 0;
+    }
+    @keyframes numberPulseAndShrink {
+        0% { opacity: 0; transform: scale(0.3) rotate(-15deg); }
+        30% { opacity: 1; transform: scale(1.2) rotate(5deg); }
+        70% { opacity: 1; transform: scale(1) rotate(0deg); }
+        100% { opacity: 0; transform: scale(0.5) rotate(10deg); }
+    }
+
+    .countdown-heart-title-section {
+        opacity: 0; transform: translateY(20px) scale(0.9); animation: fadeInTitleSection 1.5s ease-out forwards;
+    }
+    @keyframes fadeInTitleSection { to { opacity: 1; transform: translateY(0) scale(1); } }
+    .countdown-heart-title {
+        font-family: 'Tangerine', 'Great Vibes', cursive; font-size: 90px; color: var(--heart-color);
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.2); margin-top: 20px;
+    }
+    .countdown-heart-icon {
+        font-size: 100px; color: var(--heart-color); animation: heartbeatLarge 1s infinite;
+        display: block; margin-bottom: 10px;
+    }
+    @keyframes heartbeatLarge {
+      0%, 100% { transform: scale(1); } 25%, 75% { transform: scale(1.15); } 50% { transform: scale(1); }
+    }
+
+    .main-content-container {
+        opacity: 0; transform: translateY(30px);
+        transition: opacity 1s ease-in, transform 1s ease-in;
+        position: relative; z-index: 2;
+    }
+    .main-content-container.visible { opacity: 1; transform: translateY(0); }
+    .container { padding: 20px; max-width: 600px; width: 90%; }
+    .card {
+      background: var(--card-bg); padding: 30px 40px; border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 0 5px 15px rgba(0,0,0,0.08);
+      position: relative; z-index: 1; border-top: 4px solid var(--heart-color); overflow: hidden;
+    }
+
+    .main-content-container.visible .card > * { 
+        opacity: 0; transform: translateY(20px); animation: cardElementFadeIn 0.8s ease-out forwards;
+    }
+    .main-content-container.visible .card .heart { animation-delay: 0.2s; }
+    .main-content-container.visible .card h1 { animation-delay: 0.4s; }
+    .main-content-container.visible .card h2 { animation-delay: 0.6s; }
+    .main-content-container.visible .card button { animation-delay: 0.8s; }
+    .main-content-container.visible .card #surprise-message-container { animation-delay: 1s; }
+    @keyframes cardElementFadeIn { to { opacity: 1; transform: translateY(0); } }
+
+    h1 {
+      font-family: 'Tangerine', cursive; font-size: 60px; margin-bottom: 10px;
+      color: var(--heart-color); text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-family: 'Hind Siliguri', sans-serif; font-weight: 400; font-size: 22px;
+      color: var(--text-color); margin-bottom: 25px; line-height: 1.7;
+    }
+    .heart {
+      font-size: 70px; color: var(--heart-color); 
+      animation: heartbeat 1.2s infinite ease-in-out, cardElementFadeIn 0.8s ease-out 0.2s forwards;
+      margin-bottom: 15px; display: inline-block;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); } 25%, 75% { transform: scale(1.15); } 50% { transform: scale(0.95); }
+    }
+    button {
+      margin-top: 30px; padding: 12px 25px; font-size: 18px; font-weight: 600;
+      background-color: var(--button-text-color); color: var(--button-bg);
+      border: none; border-radius: 25px; cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease, opacity 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 78, 80, 0.4);
+    }
+    button:hover:not(:disabled) { background-color: #ff2e31; transform: translateY(-3px); }
+    button:active:not(:disabled) { transform: translateY(0px); }
+    
+    #surprise-message-container { margin-top: 25px; min-height: 120px; position: relative; }
+    #message {
+      font-family: 'Hind Siliguri', sans-serif; font-size: 20px; font-weight: 400;
+      color: var(--heart-color); line-height: 1.8; opacity: 0;
+      transform: translateY(20px) scale(0.95); 
+      transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      white-space: pre-line; position: relative; z-index: 1;
+    }
+    #message.visible { opacity: 1; transform: translateY(0) scale(1); }
+    #message.animate-new { animation: messageAppearAnimation 0.6s ease-out; }
+    @keyframes messageAppearAnimation {
+        0% { opacity: 0.5; transform: translateY(10px) scale(0.9); }
+        50% { transform: translateY(-5px) scale(1.05); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .message-decorator {
+        position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+        font-size: 24px; opacity: 0; animation: sparkleAndFade 0.8s ease-out; z-index: 0;
+    }
+    @keyframes sparkleAndFade {
+        0% { opacity: 0; transform: translateX(-50%) scale(0.5) translateY(10px); }
+        50% { opacity: 1; transform: translateX(-50%) scale(1.2) translateY(-5px); }
+        100% { opacity: 0; transform: translateX(-50%) scale(0.8) translateY(5px); }
+    }
+
+    #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; }
+    
+    @media (max-width: 600px) {
+        .countdown-number { font-size: 150px; }
+        .countdown-heart-title { font-size: 70px; }
+        .countdown-heart-icon { font-size: 80px; }
+        h1 { font-size: 48px; } h2 { font-size: 19px; }
+        .card { padding: 25px 20px; }
+        button { padding: 10px 20px; font-size: 16px; }
+        #message { font-size: 18px; }
+        #surprise-message-container { min-height: 100px; }
+        .message-decorator { font-size: 20px; top: -5px;}
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="countdown-container" id="countdownContainer">
+    <span class="countdown-number" id="countdownNumber"></span>
+    <div id="anniversaryTitleSection" style="display: none; text-align: center;">
+        <div class="countdown-heart-title-section">
+            <span class="countdown-heart-icon">💖</span>
+            <div class="countdown-heart-title">सालगिरह मुबारक!</div>
+        </div>
+    </div>
+  </div>
+
+  <div class="main-content-container" id="mainContent">
+    <div class="container">
+      <div class="card">
+        <div class="heart">❤️</div>
+        <h1>सालगिरह मुबारक</h1>
+        <h2>हर राह आसान हो, हर राह पे खुशियाँ हों,<br>हर दिन खूबसूरत हो, ऐसा ही पूरा जीवन हो।</h2>
+        <button id="messageButton" onclick="showNextMessage()">एक प्यार भरा पैगाम</button>
+        <div id="surprise-message-container">
+          <span class="message-decorator" id="msgDecorator">✨</span>
+          <p id="message"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    // Particles.js कॉन्फ़िगरेशन
+    if (typeof particlesJS !== 'undefined') {
+        particlesJS("particles-js", {
+            "particles": {"number": {"value": 50}, "color": {"value": ["#FFFFFF", "#FFC0CB", "#FFB6C1"]}, "shape": {"type": "heart"}, "opacity": {"value": 0.7, "random": true, "anim": {"enable": true, "speed": 0.5, "opacity_min": 0.3}}, "size": {"value": 8, "random": true, "anim": {"enable": true, "speed": 3, "size_min": 4}}, "line_linked": {"enable": false}, "move": {"enable": true, "speed": 2, "direction": "bottom", "random": true, "out_mode": "out"}},
+            "interactivity": {"events": {"onhover": {"enable": true, "mode": "bubble"}, "onclick": {"enable": true, "mode": "push"}}, "modes": {"bubble": {"distance": 100, "size": 12, "duration": 2, "opacity": 0.8}, "push": {"particles_nb": 3}}},
+            "retina_detect": true
+        });
+    } else {
+        console.error("particles.js library is not loaded correctly.");
+    }
+
+    // भावनात्मक संदेशों की सूची
+    const emotionalMessages = [
+      `मेरी प्यारी पत्नी, तुम मेरी साँसों की खुशबू हो, मेरी धड़कन का साज़,\nतेरे संग ही हर सुबह खिलती है, तेरे संग ही हर खूबसूरत शाम।\nये रिश्ता नहीं, इबादत है मेरी, सालगिरह मुबारक हो, मेरी जान!`,
+      `तुम्हारी मोहब्बत ने ही तो सँवारा है मेरा हर पल, मेरी जीवनसंगिनी,\nइस सालगिरह पर वादा है, ये प्यार का सफर यूँ ही खूबसूरत रहेगा, मेरी रानी।`,
+      `तुम मेरी चाँदनी हो, तुम ही मेरी सुबह की पहली किरण,\nहर लम्हा तुम्हारे प्यार से रौशन है। सालगिरह मुबारक, मेरी दुनिया, मेरी जान!`,
+      `जबसे थामा है तुम्हारा हाथ, मेरी प्यारी पत्नी, हर राह आसान हो गई,\nखुदा करे हमारी ये मोहब्बत, हर गुजरते साल के साथ और गहरी होती जाए।`,
+      `तुम क्या आईं जिंदगी में, बहार आ गई, मेरे घर को घर तुमने बनाया,\nहर खुशी तुमसे है, हर सपना तुमसे है। शुक्रिया, मेरी अर्धांगिनी, मेरी जिंदगी में आने के लिए।`,
+      `तुम मिलीं तो जिंदगी को मकसद मिला, हर तूफान में तुमने मेरा हाथ थाम लिया,\nमेरी ताकत, मेरी प्रेरणा, तुम ही हो। सालगिरह मुबारक, मेरी प्यारी पत्नी।`,
+      `मेरी हर दुआ में बस तुम्हारा ही नाम है, मेरी हमसफ़र,\nतुम्हारी मुस्कान से ही तो मेरे दिन की शुरुआत और रात का सुकून है। हमारी जोड़ी सलामत रहे!`,
+      `जब तक ये कायनात रहेगी, मेरी मोहब्बत तुम्हारे लिए कम ना होगी,\nहर सालगिरह पर ये वादा और पक्का होता है, कि मैं हमेशा तुम्हारा रहूँगा, मेरी प्रिय।`,
+      `तुम्हारे प्यार ने मेरी जिंदगी को ऐसे रंगों से भर दिया है,\nकि हर मौसम बसंत सा लगता है। सालगिरह मुबारक, मेरे प्यारे जीवनसाथी।`,
+      `कोई गिला नहीं, कोई शिकवा नहीं, बस तुम्हारा प्यार चाहिए,\nये दिल हमेशा तुम्हारा ही रहेगा, मेरी जान। सालगिरह की बहुत बधाईयाँ!`,
+      `तुम मेरी हिम्मत हो, तुम ही मेरा सुकून, मेरी प्यारी पत्नी,\nतुम्हारे बिना मेरी कहानी का कोई मतलब नहीं। सालगिरह मुबारक हो, मेरी अर्धांगिनी।`,
+      `हर गुजरते साल के साथ, तुम्हारे लिए मेरा प्यार और बढ़ता जाता है,\nदुआ है हमारा आने वाला हर पल, आज से भी ज्यादा खूबसूरत हो। ढेर सारा प्यार, मेरी पत्नी।`,
+      `जैसे बागों में सबसे खूबसूरत फूल खिलता है, वैसे ही तुम मेरी जिंदगी में खिली हो,\nतुम्हारी खुशबू से मेरा जीवन महकता है। हमारी मोहब्बत को सलाम, मेरी रानी!`,
+      `हमारा रिश्ता सिर्फ प्यार का नहीं, विश्वास और सम्मान का भी है,\nतुम मेरी दुनिया हो, मेरा किनारा हो। सालगिरह मुबारक, मेरी प्यारी पत्नी।`,
+      `रब से हर पल यही दुआ करता हूँ, मेरी जीवनसंगिनी,\nकि हमारी ये प्यारी जोड़ी हमेशा सलामत रहे, और हमारा प्यार यूँ ही फलता-फूलता रहे।`,
+      `तुम्हारे साथ बिताया हर एक लम्हा, मेरी जिंदगी का सबसे कीमती तोहफा है,\nतुम ही मेरी उम्मीद, मेरी खुशी, मेरी हर आस हो। सालगिरह मुबारक, मेरी जान।`,
+      `हमारी मोहब्बत की ये रौशनी कभी फीकी ना पड़े,\nहमारी प्यार भरी कहानी दुनिया सुनती रहे। दिल से सालगिरह की दुआएँ, मेरी पत्नी।`,
+      `जब तुम साथ होती हो, तो हर दिन एक जश्न सा लगता है,\nतुम्हारे बिना तो जिंदगी बेरंग है। सालगिरह मुबारक, मेरी प्यारी पत्नी, मेरी अजीज।`,
+      `मेरी आँखों में तुम्हारे लिए जो प्यार और इज्ज़त है, वो कभी कम नहीं होगी,\nये दिल सिर्फ तुम्हारे लिए धड़कता है। हैप्पी एनिवर्सरी, मेरी हमसफ़र!`,
+      `ये जो प्यार का बंधन हमने बाँधा है, ये जन्मों का साथ निभाएंगे,\nतुम्हारी हर खुशी मेरी हो, और हर गम मुझसे दूर रहे। सालगिरह मुबारक, मेरी प्रिय पत्नी!`
+    ];
+    
+    // DOM एलिमेंट्स
+    const countdownContainer = document.getElementById('countdownContainer');
+    const countdownNumberEl = document.getElementById('countdownNumber');
+    const anniversaryTitleSection = document.getElementById('anniversaryTitleSection');
+    const mainContentContainer = document.getElementById('mainContent');
+    
+    let currentCountdown = 1;
+    const maxCountdown = 3;
+
+    // काउंटडाउन फंक्शन
+    function runCountdown() {
+        if (currentCountdown <= maxCountdown) {
+            countdownNumberEl.innerText = currentCountdown;
+            countdownNumberEl.style.animation = 'none';
+            void countdownNumberEl.offsetHeight; 
+            countdownNumberEl.style.animation = 'numberPulseAndShrink 1s ease-out forwards';
+            
+            setTimeout(() => {
+                currentCountdown++;
+                runCountdown();
+            }, 1100); 
+        } else {
+            countdownNumberEl.style.display = 'none';
+            anniversaryTitleSection.style.display = 'block';
+
+            if (typeof confetti === 'function') {
+                const duration = 2.5 * 1000;
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100, colors: ['#d83a56', '#ff9a9e', '#fad0c4', '#ffffff', '#f8b0b0', '#f47c7c']};
+                function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+                const interval = setInterval(function() {
+                  const timeLeft = animationEnd - Date.now();
+                  if (timeLeft <= 0) return clearInterval(interval);
+                  const particleCount = 50 * (timeLeft / duration);
+                  confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 } }));
+                }, 250);
+            }
+            
+            setTimeout(() => {
+                countdownContainer.classList.add('hidden');
+                mainContentContainer.classList.add('visible');
+            }, 2800); 
+        }
+    }
+
+    // संदेश दिखाने का लॉजिक
+    let currentMessageIndex = -1;
+    const msgElement = document.getElementById('message');
+    const messageButton = document.getElementById('messageButton');
+    const msgDecorator = document.getElementById('msgDecorator'); 
+
+    function triggerDecoratorAnimation() {
+        if(msgDecorator) { 
+            msgDecorator.style.animation = 'none'; 
+            void msgDecorator.offsetHeight; 
+            msgDecorator.style.animation = ''; 
+        }
+    }
+
+    function displayCurrentMessage() {
+        msgElement.innerText = emotionalMessages[currentMessageIndex];
+        triggerDecoratorAnimation(); 
+        
+        msgElement.classList.remove('animate-new'); 
+        void msgElement.offsetHeight; 
+        msgElement.classList.add('visible');
+        msgElement.classList.add('animate-new'); 
+
+        setTimeout(() => {
+            msgElement.classList.remove('animate-new');
+        }, 600); 
+    }
+
+    function showNextMessage() {
+      currentMessageIndex = (currentMessageIndex + 1) % emotionalMessages.length;
+      if (msgElement.classList.contains('visible')) {
+        msgElement.classList.remove('visible'); 
+        setTimeout(displayCurrentMessage, 400); 
+      } else {
+        displayCurrentMessage();
+      }
+      
+      if (messageButton.innerText === "एक प्यार भरा पैगाम") {
+        messageButton.innerText = "अगला पैगाम";
+      } else if (currentMessageIndex === 0) {
+        messageButton.innerText = "एक प्यार भरा पैगाम";
+      }
+    }
+
+    // पेज लोड होने पर काउंटडाउन शुरू करें
+    window.onload = () => {
+        runCountdown();
+    };
+  </script>
+</body>
+</html>
